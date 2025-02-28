@@ -1,5 +1,6 @@
 package sk.adambarca.arbes_task;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -23,28 +24,59 @@ class TelephoneBillCalculatorServiceTest {
         assertThat(result).isZero();
     }
 
-    @Test
-    void calculate_zeroMinuteInPeak() throws IOException {
-        var csv = getCsv("zero_minute_in_peak");
-        var result = telephoneBillCalculator.calculate(csv);
+    @Nested
+    class PeakRateTests {
+        @Test
+        void calculate_zeroMinuteInPeak() throws IOException {
+            var csv = getCsv("zero_minute_in_peak");
+            var result = telephoneBillCalculator.calculate(csv);
 
-        assertThat(result).isEqualTo(BigDecimal.ONE);
+            assertThat(result).isEqualTo(BigDecimal.ONE);
+        }
+
+        @Test
+        void calculate_secondsInPeak() throws IOException {
+            var csv = getCsv("zero_minute_in_peak");
+            var result = telephoneBillCalculator.calculate(csv);
+
+            assertThat(result).isEqualTo(BigDecimal.ONE);
+        }
+
+        @Test
+        void calculate_2minutesInPeak() throws IOException {
+            var csv = getCsv("2_minutes_in_peak");
+            var result = telephoneBillCalculator.calculate(csv);
+
+            assertThat(result).isEqualTo(BigDecimal.TWO);
+        }
     }
 
-    @Test
-    void calculate_secondsInPeak() throws IOException {
-        var csv = getCsv("zero_minute_in_peak");
-        var result = telephoneBillCalculator.calculate(csv);
+    @Nested
+    class OffPeakRateTests {
 
-        assertThat(result).isEqualTo(BigDecimal.ONE);
-    }
+        @Test
+        void calculate_zeroMinuteInOffPeak() throws IOException {
+            var csv = getCsv("zero_minute_in_off_peak");
+            var result = telephoneBillCalculator.calculate(csv);
 
-    @Test
-    void calculate_2minutesInPeak() throws IOException {
-        var csv = getCsv("2_minutes_in_peak");
-        var result = telephoneBillCalculator.calculate(csv);
+            assertThat(result).isEqualTo(BigDecimal.valueOf(0.5));
+        }
 
-        assertThat(result).isEqualTo(BigDecimal.TWO);
+        @Test
+        void calculate_secondsInOffPeak() throws IOException {
+            var csv = getCsv("zero_minute_in_off_peak");
+            var result = telephoneBillCalculator.calculate(csv);
+
+            assertThat(result).isEqualTo(BigDecimal.valueOf(0.5));
+        }
+
+        @Test
+        void calculate_2minutesInOffPeak() throws IOException {
+            var csv = getCsv("2_minutes_in_off_peak");
+            var result = telephoneBillCalculator.calculate(csv);
+
+            assertThat(result).isEqualTo(BigDecimal.valueOf(1.0));
+        }
     }
 
     private String getCsv(String filename) throws IOException {
