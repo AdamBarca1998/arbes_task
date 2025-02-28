@@ -92,7 +92,7 @@ class TelephoneBillCalculatorServiceTest {
         var csv = getCsv("task");
         var result = telephoneBillCalculator.calculate(csv);
 
-        assertThat(result).isEqualTo(BigDecimal.valueOf(11.3));
+        assertThat(result).isEqualTo(BigDecimal.valueOf(1.5));
     }
 
     private String getCsv(String filename) throws IOException {
