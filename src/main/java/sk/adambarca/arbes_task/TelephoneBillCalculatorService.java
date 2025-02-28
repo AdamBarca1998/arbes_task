@@ -31,12 +31,8 @@ public class TelephoneBillCalculatorService implements TelephoneBillCalculator {
 
     private BigDecimal calculateCallCost(TelephoneBill call) {
         LocalDateTime startCount = call.startDateTime();
-        long totalMinutes = Duration.between(startCount, call.endDateTime()).toMinutes();
+        long totalMinutes = Duration.between(startCount, call.endDateTime()).toMinutes() + 1;
         BigDecimal totalCost = BigDecimal.ZERO;
-
-        if (totalMinutes == 0) {
-            totalMinutes = 1; // client must pay
-        }
 
         for (long i = 0; i < totalMinutes; i++) {
             LocalTime minuteStart = startCount.toLocalTime();

@@ -31,7 +31,21 @@ class TelephoneBillCalculatorServiceTest {
         assertThat(result).isEqualTo(BigDecimal.ONE);
     }
 
+    @Test
+    void calculate_secondsInPeak() throws IOException {
+        var csv = getCsv("zero_minute_in_peak");
+        var result = telephoneBillCalculator.calculate(csv);
 
+        assertThat(result).isEqualTo(BigDecimal.ONE);
+    }
+
+    @Test
+    void calculate_2minutesInPeak() throws IOException {
+        var csv = getCsv("2_minutes_in_peak");
+        var result = telephoneBillCalculator.calculate(csv);
+
+        assertThat(result).isEqualTo(BigDecimal.TWO);
+    }
 
     private String getCsv(String filename) throws IOException {
         var path = Path.of("src","test", "resources", CSV_DIR, filename + CSV);
