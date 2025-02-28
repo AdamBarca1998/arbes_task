@@ -79,6 +79,14 @@ class TelephoneBillCalculatorServiceTest {
         }
     }
 
+    @Test
+    void calculate_betweenPeak() throws IOException {
+        var csv = getCsv("between_peak");
+        var result = telephoneBillCalculator.calculate(csv);
+
+        assertThat(result).isEqualTo(BigDecimal.valueOf(1.5));
+    }
+
     private String getCsv(String filename) throws IOException {
         var path = Path.of("src","test", "resources", CSV_DIR, filename + CSV);
 
