@@ -17,6 +17,8 @@ public class TelephoneBillCalculatorService implements TelephoneBillCalculator {
     private static final BigDecimal PEAK_RATE = BigDecimal.ONE;
     private static final BigDecimal OFF_PEAK_RATE = BigDecimal.valueOf(0.5);
 
+    private static final BigDecimal SALE_AFTER_5_MINUTES = BigDecimal.valueOf(0.2);
+
     private final CsvParser csvParser = new CsvParser();
 
 
@@ -38,13 +40,17 @@ public class TelephoneBillCalculatorService implements TelephoneBillCalculator {
         long totalMinutes = Duration.between(startCount, call.endDateTime()).toMinutes() + 1;
         BigDecimal totalCost = BigDecimal.ZERO;
 
-        for (long i = 0; i < totalMinutes; i++) {
+        for (long minuteCount = 0; minuteCount < totalMinutes; minuteCount++) {
             LocalTime minuteStart = startCount.toLocalTime();
 
             if ((minuteStart.equals(PEAK_START) || minuteStart.isAfter(PEAK_START)) && minuteStart.isBefore(PEAK_END)) {
                 totalCost = totalCost.add(PEAK_RATE);
             } else {
                 totalCost = totalCost.add(OFF_PEAK_RATE);
+            }
+
+            if (minuteCount > 4) { // after 5 minutes
+                totalCost = totalCost.subtract(SALE_AFTER_5_MINUTES);
             }
 
             startCount = call.startDateTime().plusMinutes(1);
