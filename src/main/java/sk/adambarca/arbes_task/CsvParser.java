@@ -14,7 +14,20 @@ class CsvParser {
     private static final String CSV_DELIMITER = ",";
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
-    TelephoneBill fromCsvString(String csvLine) {
+    List<TelephoneBill> fromCsvString(String csvContent) {
+        List<TelephoneBill> bills = new ArrayList<>();
+        String[] lines = csvContent.split(System.lineSeparator());
+
+        for (String line : lines) {
+            if (!line.isBlank()) {
+                bills.add(parseLine(line));
+            }
+        }
+
+        return bills;
+    }
+
+    private TelephoneBill parseLine(String csvLine) {
         String[] parts = csvLine.split(CSV_DELIMITER);
 
         if (parts.length != 3) {

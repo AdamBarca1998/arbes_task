@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class TelephoneBillCalculatorService implements TelephoneBillCalculator {
@@ -25,9 +26,11 @@ public class TelephoneBillCalculatorService implements TelephoneBillCalculator {
             return BigDecimal.ZERO;
         }
 
-        TelephoneBill telephoneBill = csvParser.fromCsvString(phoneLog);
+        List<TelephoneBill> telephoneBills = csvParser.fromCsvString(phoneLog);
 
-        return calculateCallCost(telephoneBill);
+        return telephoneBills.stream()
+                .map(this::calculateCallCost)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     private BigDecimal calculateCallCost(TelephoneBill call) {
